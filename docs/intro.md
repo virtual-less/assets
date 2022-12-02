@@ -32,7 +32,7 @@
 ```ts
 import {VaasServerType, Decorator } from 'vaas-framework'
 export default class Hello {
-    @Decorator.VassServer({type:'http',method:'get',routerName:'/hello'})
+    @Decorator.VaasServer({type:'http',method:'get',routerName:'/hello'})
     async hello({req,res}:VaasServerType.HttpParams) {
         return {
             hello:'world'
@@ -42,11 +42,11 @@ export default class Hello {
 ```
 以上是虚拟化服务框架中最简单的代码例子，这里代表了在/hello/hello中能返回{hello:'world'}的结果。其中：
 * 每一个变量有拥有其变量提示
-* 路由通过装饰器VassServer来配置，同时支持另外两种类型rpc和websocket
+* 路由通过装饰器VaasServer来配置，同时支持另外两种类型rpc和websocket
 * 通过return返回数据，通过throw来抛出Error类型异常
 
 既然作为使用虚拟化框架，也就意味着不同的APP不能相互实现阻塞和相互的影响，所以在架构实现上对于每个App都支持配置多线程数量，且每个多线程中使用vm进行对应的虚拟化工作。同时依托于线程池控制，即可实现多个请求复用worker。而每个App的代码非常巧妙在worker中进行了缓存且被不断的使用，直到长期无请求导致worker过期回收。具体架构如下：
-![vass-framework](../vass-framework.png)
+![vaas-framework](../vaas-framework.png)
 
 这个架构之下还有一个好处就是不需要过度关心内存泄漏问题，因为单次请求结束且超时时间外没有新连接则默认释放内存，这个模式类似PHP，但是和PHP不同点为不会马上释放，且可以复用多线程的模式。
 
